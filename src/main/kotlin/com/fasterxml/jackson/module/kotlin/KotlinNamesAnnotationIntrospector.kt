@@ -126,12 +126,13 @@ internal class KotlinNamesAnnotationIntrospector(
             val member = param.owner.member
             if (member is Constructor<*>) {
                 val ctor = (member as Constructor<Any>)
+                val kotlinCtor = cache.kotlinFromJava(ctor)
                 val ctorParmCount = ctor.parameterTypes.size
-                val ktorParmCount = try { ctor.kotlinFunction?.parameters?.size ?: 0 }
+                val ktorParmCount = try { kotlinCtor?.parameters?.size ?: 0 }
                 catch (ex: KotlinReflectionInternalError) { 0 }
                 catch (ex: UnsupportedOperationException) { 0 }
                 if (ktorParmCount > 0 && ktorParmCount == ctorParmCount) {
-                    ctor.kotlinFunction?.parameters?.get(param.index)?.name
+                    kotlinCtor?.parameters?.get(param.index)?.name
                 } else {
                     null
                 }
